@@ -51,9 +51,18 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     const fetchProduct = async () => {
       try {
         const data = await getProductById(productId);
+
+        if (!data) {
+          throw new Error('Product not found');
+        }
+
         setProduct({
-          ...data,
+          id: data.id || '',
+          name: data.name || '',
+          description: data.description || '',
+          specification: data.specification || '',
           price: data.price || 0,
+          image: data.image || '',
         });
         setImagePreview(data.image);
       } catch (error) {

@@ -15,7 +15,7 @@ type Subscriber = {
   latitude: number;
   active: boolean;
   country: string;
-  state: string;
+  state: string; // Removed null possibility to match the defined type
   subscriptionEndDate: Date | null;
 };
 
@@ -26,22 +26,31 @@ type StateStats = {
   };
 };
 
-// Create custom icons for active and inactive subscribers
-const activeIcon = new L.Icon({
-  iconUrl: '/images/green-pointer.svg',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
-});
-
-const inactiveIcon = new L.Icon({
-  iconUrl: '/images/red-pointer.svg',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
-});
-
+// Fix 1: Move icon definition inside component to avoid SSR issues
 const Map = () => {
+  // Create custom icons for active and inactive subscribers
+  const activeIcon = React.useMemo(
+    () =>
+      new L.Icon({
+        iconUrl: '/images/green-pointer.svg',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+      }),
+    []
+  );
+
+  const inactiveIcon = React.useMemo(
+    () =>
+      new L.Icon({
+        iconUrl: '/images/red-pointer.svg',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+      }),
+    []
+  );
+
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [filteredSubscribers, setFilteredSubscribers] = useState<Subscriber[]>(
     []
@@ -75,7 +84,13 @@ const Map = () => {
     const loadSubscribers = async () => {
       try {
         const data = await getSubscribers();
-        setSubscribers(data);
+        // Fix type error: Map the data to ensure state is never null
+        const typedData: Subscriber[] = data.map((sub: any) => ({
+          ...sub,
+          state: sub.state || 'Unknown', // Provide default value for null states
+        }));
+
+        setSubscribers(typedData);
         setIsLoading(false);
       } catch (error) {
         console.error('Failed to load subscribers:', error);
@@ -103,6 +118,9 @@ const Map = () => {
 
     setFilteredSubscribers(filtered);
   }, [query, activeFilter, subscribers]);
+
+  // Fix 2: Define map center as a LatLngExpression
+  const defaultCenter: [number, number] = [10, 10];
 
   return (
     <div className="relative w-full mt-6">
@@ -146,22 +164,25 @@ const Map = () => {
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
         </div>
       ) : (
+        // Fix 3: Use proper typing for MapContainer props
         <MapContainer
-          center={[10, 10]}
+          center={defaultCenter}
           zoom={2}
-          style={{ height: '70vh', width: '100%', zIndex: '1' }}
-          dragging={false}
-          touchZoom={false}
+          style={{ height: '70vh', width: '100%', zIndex: 1 }}
           scrollWheelZoom={false}
           doubleClickZoom={false}
+          dragging={false}
+          touchZoom={false}
           boxZoom={false}
           keyboard={false}
         >
+          {/* Fix 4: Fix the TileLayer attribution */}
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://carto.com/">CartoDB</a> contributors'
+            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           />
           {filteredSubscribers.map((sub) => (
+            // Fix 5: Fix Marker props
             <Marker
               key={sub.id}
               position={[sub.latitude, sub.longitude]}
@@ -180,7 +201,13 @@ const Map = () => {
                   Status: {sub.active ? 'Active' : 'Inactive'}
                 </div>
               </Popup>
-              <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+              {/* Fix 6: Fix Tooltip props */}
+              <Tooltip
+                permanent={false}
+                direction="top"
+                offset={[0, -10]}
+                opacity={1}
+              >
                 <div className="bg-gray-700 text-white p-2 rounded text-sm shadow-lg">
                   <strong>
                     {sub.state}, {sub.country}
@@ -188,8 +215,8 @@ const Map = () => {
                   <br />
                   {sub.starlinkId} | {sub.serialNumber}
                   <br />
-                  Active: {stateStats[sub.state].active} | Inactive:{' '}
-                  {stateStats[sub.state].inactive}
+                  Active: {stateStats[sub.state]?.active || 0} | Inactive:{' '}
+                  {stateStats[sub.state]?.inactive || 0}
                 </div>
               </Tooltip>
             </Marker>

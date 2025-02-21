@@ -73,7 +73,12 @@ export default function SubscribersPage() {
     const fetchData = async () => {
       try {
         const subscribers = await getSubscribers();
-        setData(subscribers);
+        // Ensure state is always a string
+        const formattedSubscribers = subscribers.map((sub) => ({
+          ...sub,
+          state: sub.state ?? '', // Replace null with an empty string
+        }));
+        setData(formattedSubscribers);
       } catch (error) {
         toast.error('Failed to fetch subscribers');
       }

@@ -66,7 +66,17 @@ export default function ProductList() {
     const fetchData = async () => {
       try {
         const products = await getProducts();
-        setData(products);
+        const sanitizedProducts = products.map((product) => ({
+          id: product.id,
+          name: product.name ?? 'Unnamed Product',
+          description: product.description ?? '',
+          image: product.image ?? '/placeholder.jpg', // Provide a default image
+          price: product.price ?? 0, // Ensure price is a number
+          specification: product.specification ?? '',
+          createdAt: product.createdAt.toISOString(), // Convert Date to string if needed
+        }));
+
+        setData(sanitizedProducts);
       } catch (error) {
         toast.error('Failed to fetch products');
       }

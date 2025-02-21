@@ -1,19 +1,18 @@
 'use client';
-import { useEffect } from 'react';
+
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export default function AuthError() {
+function AuthErrorContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
   useEffect(() => {
-    // Redirect to login after 3 seconds
     const timeout = setTimeout(() => {
       router.push('/login');
     }, 4000);
-
     return () => clearTimeout(timeout);
   }, [router]);
 
@@ -41,5 +40,13 @@ export default function AuthError() {
         Redirecting to login page in 4 seconds...
       </p>
     </div>
+  );
+}
+
+export default function AuthError() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthErrorContent />
+    </Suspense>
   );
 }

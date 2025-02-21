@@ -35,7 +35,20 @@ export default function ViewProductPage({ params }: ViewProductPageProps) {
     const fetchProduct = async () => {
       try {
         const data = await getProductById(productId);
-        setProduct(data);
+
+        if (!data) {
+          throw new Error('Product not found');
+        }
+
+        setProduct({
+          id: data.id || '',
+          name: data.name || 'No name available',
+          description: data.description || 'No description available',
+          specification: data.specification || 'No specifications available',
+          price: data.price ?? 0, // Use nullish coalescing for numbers
+          image: data.image || '',
+          createdAt: data.createdAt || new Date().toISOString(),
+        });
       } catch (error) {
         toast.error('Failed to fetch product');
         router.push('/admin/products');

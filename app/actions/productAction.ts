@@ -60,9 +60,18 @@ export async function createProduct(data: {
 
 // Get single product
 export async function getProductById(id: string) {
-  return await prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: { id },
   });
+
+  if (!product) {
+    throw new Error('Product not found');
+  }
+
+  return {
+    ...product,
+    createdAt: product.createdAt.toISOString(), // Convert Date to string
+  };
 }
 
 // Update product
