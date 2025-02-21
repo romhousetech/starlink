@@ -14,17 +14,23 @@ const NavBar: React.FC<LinkProps> = ({ href }) => {
 
   useEffect(() => {
     setIsMounted(true);
+
+    if (typeof window === 'undefined') return;
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
+  // Early return while not mounted
   if (!isMounted) {
     return null;
   }
