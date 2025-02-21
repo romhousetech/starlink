@@ -10,8 +10,10 @@ interface LinkProps {
 
 const NavBar: React.FC<LinkProps> = ({ href }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -22,6 +24,10 @@ const NavBar: React.FC<LinkProps> = ({ href }) => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <header
