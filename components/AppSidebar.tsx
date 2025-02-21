@@ -1,15 +1,7 @@
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
-import {
-  MapPinHouse,
-  Settings,
-  Plus,
-  Edit,
-  User2,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react';
+import { MapPinHouse, User2, ChevronDown, ChevronUp } from 'lucide-react';
 
 import {
   Sidebar,

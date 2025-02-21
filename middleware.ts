@@ -1,10 +1,12 @@
-import { withAuth } from 'next-auth/middleware';
+// middleware.ts
 import { NextResponse } from 'next/server';
+import { withAuth } from 'next-auth/middleware';
+import { NextRequestWithAuth } from 'next-auth/middleware';
 
 export default withAuth(
-  function middleware(req) {
+  function middleware(req: NextRequestWithAuth) {
     const { pathname } = req.nextUrl;
-    const token = req.nextauth?.token;
+    const token = req.nextauth.token;
 
     // Handle user management access (ADMIN only)
     if (pathname.startsWith('/admin/users') && token?.role !== 'ADMIN') {
@@ -29,7 +31,7 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token, // Require authentication for all matched routes
+      authorized: ({ token }) => !!token,
     },
     pages: {
       signIn: '/login',
