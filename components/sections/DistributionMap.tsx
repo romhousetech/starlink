@@ -1,7 +1,11 @@
 'use client';
 
 import HeaderText from '../HeaderText';
-import Map from '../Map';
+import dynamic from 'next/dynamic';
+
+const Map = dynamic(() => import('../Map'), {
+  ssr: false,
+});
 
 const DistributionMap = () => {
   return (
