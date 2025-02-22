@@ -101,7 +101,7 @@ export default function AddSubscriberForm() {
     <div className="flex justify-center items-start min-h-screen">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-lg p-8 bg-gray-900 text-white rounded-lg shadow-lg"
+        className="w-full max-w-lg p-8 bg-[#0f172a] text-white rounded-lg shadow-lg"
       >
         <Toaster position="top-center" />
         <h2 className="text-2xl font-bold mb-6 text-center">
