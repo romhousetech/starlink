@@ -42,6 +42,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [tableDimensions, setTableDimensions] = useState<TableDimensions>({
     rows: 2,
     cols: 2,
@@ -53,6 +54,14 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       editorRef.current.innerHTML = initialValue;
     }
   }, [initialValue]);
+
+  if (!isMounted) {
+    return (
+      <div className="border rounded-lg overflow-hidden">
+        <div className="p-4 min-h-[200px]">Loading editor...</div>
+      </div>
+    );
+  }
 
   const execCommand = (command: string, value: string | null = null) => {
     document.execCommand(command, false, value);

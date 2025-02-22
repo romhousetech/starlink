@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, createContext, useContext } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -36,7 +37,8 @@ const MenuItem = ({ item }) => {
     <div className="mb-2">
       <button
         onClick={() => setIsSubmenuOpen(!isSubmenuOpen)}
-        className="flex items-center w-full px-4 py-2 text-white hover:bg-primary rounded-lg transition-colors"
+        className="flex items-center w-full px-4 py-2 text-white hover:bg-primary
+         rounded-lg transition-colors"
       >
         <item.icon className="w-5 h-5 mr-3" />
         <span className="flex-1 text-left">{item.title}</span>
@@ -57,7 +59,8 @@ const MenuItem = ({ item }) => {
             <Link
               key={subItem.title}
               href={subItem.url}
-              className="block px-4 py-2 text-sm text-white hover:bg-primary rounded-lg transition-colors"
+              className="block px-4 py-2 text-sm text-white hover:bg-primary
+               rounded-lg transition-colors"
             >
               {subItem.title}
             </Link>
@@ -154,14 +157,16 @@ export const AppSidebar = () => {
               <div className="absolute bottom-full left-0 w-full mb-2 bg-white border border-gray-200 rounded-lg shadow-lg">
                 <Link
                   href="/admin/users"
-                  className="flex items-center px-4 py-2 text-sm text-white hover:bg-primary"
+                  className="flex items-center px-4 py-2 text-sm text-white hover:bg-primary
+                  "
                 >
                   <Users className="w-4 h-4 mr-2" />
                   Manage staff
                 </Link>
                 <button
                   onClick={() => signOut()}
-                  className="flex items-center w-full px-4 py-2 text-left text-sm text-white hover:bg-primary"
+                  className="flex items-center w-full px-4 py-2 text-left text-sm text-white hover:bg-primary
+                  "
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign out
