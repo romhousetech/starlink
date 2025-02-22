@@ -102,7 +102,7 @@ export const AppSidebar = () => {
       {/* Mobile Menu Button */}
       <button
         onClick={toggle}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#0f172a] border border-gray-200 rounded-lg shadow-lg"
       >
         <Menu className="w-6 h-6" />
       </button>

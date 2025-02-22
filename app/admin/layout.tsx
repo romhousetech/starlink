@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <SessionProvider>
       <SidebarProvider>
         <AppSidebar />
-        <main className="min-h-screen p-6 ml-6">{children}</main>
+        <main className="h-full p-6 ml-6">{children}</main>
       </SidebarProvider>
     </SessionProvider>
   );

@@ -14,7 +14,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -26,6 +26,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import toast, { Toaster } from 'react-hot-toast';
 import {
   Table,
@@ -73,10 +80,10 @@ export default function SubscribersPage() {
     const fetchData = async () => {
       try {
         const subscribers = await getSubscribers();
-        // Ensure state is always a string
-        const formattedSubscribers = subscribers.map((sub) => ({
+        const formattedSubscribers = subscribers.map((sub, index) => ({
           ...sub,
-          state: sub.state ?? '', // Replace null with an empty string
+          state: sub.state ?? '',
+          serialNo: index + 1, // Add serial number
         }));
         setData(formattedSubscribers);
       } catch (error) {
@@ -104,6 +111,11 @@ export default function SubscribersPage() {
   };
 
   const columns: ColumnDef<Subscriber>[] = [
+    {
+      accessorKey: 'serialNo',
+      header: 'No.',
+      cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
+    },
     {
       accessorKey: 'starlinkId',
       header: 'Starlink ID',
@@ -239,6 +251,11 @@ export default function SubscribersPage() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
+    },
   });
 
   return (
@@ -308,6 +325,56 @@ export default function SubscribersPage() {
               )}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex items-center justify-between px-2">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <p className="text-sm font-medium">Rows per page</p>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value));
+                }}
+              >
+                <SelectTrigger className="h-8 w-[70px]">
+                  <SelectValue
+                    placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent side="top" className="bg-[#0f172a]">
+                  {[8, 10, 15, 20].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of{' '}
+              {table.getPageCount()}
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Delete Confirmation Dialog */}
