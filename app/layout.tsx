@@ -1,18 +1,5 @@
 import type { Metadata } from 'next';
-import { Manrope } from 'next/font/google';
-import { Space_Grotesk } from 'next/font/google';
 import './globals.css';
-import './globals.css';
-
-const manrope = Manrope({
-  variable: '--font-manrope-sans',
-  subsets: ['latin'],
-});
-
-const space_grotesk = Space_Grotesk({
-  variable: '--font-space_grotesk-sans',
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   title: 'ROM House Technologies',
@@ -26,11 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${manrope.variable} ${space_grotesk.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
