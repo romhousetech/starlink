@@ -118,7 +118,7 @@ export const AppSidebar = () => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed lg:static inset-y-0 left-0 z-40
+          fixed lg:static inset-y-0 left-0 z-40 h-screen
           w-64 bg-[#0f172a] border-r border-gray-200
           transform transition-transform duration-200 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -154,7 +154,7 @@ export const AppSidebar = () => {
             </button>
 
             {isProfileOpen && (
-              <div className="absolute bottom-full left-0 w-full mb-2 bg-white border border-gray-200 rounded-lg shadow-lg">
+              <div className="absolute bottom-full left-0 w-full mb-2 bg- border border-gray-200 rounded-lg shadow-lg bg-[#0f172a]">
                 <Link
                   href="/admin/users"
                   className="flex items-center px-4 py-2 text-sm text-white hover:bg-primary
