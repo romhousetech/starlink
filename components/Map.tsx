@@ -125,7 +125,7 @@ const Map = () => {
   return (
     <div className="relative w-full mt-6">
       {/* Filter Bar */}
-      <div className="absolute z-10 bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4 items-center bg-gray-800 p-2 rounded-lg shadow-lg w-fit text-xs">
+      <div className="absolute z-10 bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col md:flex-row gap-4 items-center bg-gray-800 p-2 rounded-lg shadow-lg w-fit text-xs">
         {/* Status Filter */}
         <select
           className="bg-gray-700 text-white px-3 py-2 rounded"
