@@ -112,11 +112,6 @@ export default function SubscribersPage() {
 
   const columns: ColumnDef<Subscriber>[] = [
     {
-      accessorKey: 'serialNo',
-      header: 'No.',
-      cell: ({ row }) => <div className="text-center">{row.index + 1}</div>,
-    },
-    {
       accessorKey: 'starlinkId',
       header: 'Starlink ID',
       cell: ({ row }) => (
@@ -260,6 +255,7 @@ export default function SubscribersPage() {
 
   return (
     <div className="w-full">
+
       <Toaster position="top-center" reverseOrder={false} />
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">

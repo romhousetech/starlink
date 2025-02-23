@@ -20,7 +20,6 @@ export default async function AdminPage() {
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
       <p>Welcome, {session.user.name}</p>
       <p className="text-sm text-gray-600">Role: {session.user.role}</p>
-
       {/* Admin content accessible to both ADMIN and STAFF */}
     </div>
   );
