@@ -8,6 +8,7 @@ import CTA from '@/components/sections/CTA';
 import ContactForm from '@/components/ContactForm';
 import Features from '@/components/sections/Features';
 import dynamic from 'next/dynamic';
+import WhatsAppChat from '@/components/WhatsApp';
 
 const NavBar = dynamic(() => import('@/components/sections/NavBar'), {
   ssr: false,
@@ -31,6 +32,7 @@ const page = () => {
       <Faq />
       <CTA />
       <ContactForm />
+      <WhatsAppChat />
     </div>
   );
 };
