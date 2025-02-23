@@ -59,6 +59,7 @@ export async function updateSubscriber(
     country: string;
     state: string;
     subscriptionDuration: number;
+    subscriptionEndDate: Date | null;
   }>
 ) {
   const session = await getServerSession(authOptions);

@@ -13,6 +13,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Switch } from '@/components/ui/switch';
 import toast from 'react-hot-toast';
 import {
   getSubscriberById,
@@ -41,6 +52,9 @@ export default function EditSubscriberPage({
   );
   const [subscriptionDuration, setSubscriptionDuration] =
     React.useState<number>();
+  const [isDeactivateDialogOpen, setIsDeactivateDialogOpen] =
+    React.useState(false);
+  const [isActivateDialogOpen, setIsActivateDialogOpen] = React.useState(false);
 
   const router = useRouter();
 
@@ -87,6 +101,53 @@ export default function EditSubscriberPage({
     setSubscriber({ ...subscriber, state: stateName });
   };
 
+  const handleActiveToggle = (checked: boolean) => {
+    if (!subscriber) return;
+
+    if (subscriber.active && !checked) {
+      setIsDeactivateDialogOpen(true);
+    } else if (!subscriber.active && checked) {
+      setIsActivateDialogOpen(true);
+    }
+  };
+
+  const handleDeactivateConfirm = async () => {
+    try {
+      await updateSubscriber(subscriberId, {
+        active: false,
+        subscriptionEndDate: null,
+      });
+      setSubscriber({
+        ...subscriber,
+        active: false,
+        subscriptionEndDate: null,
+      });
+      toast.success('Subscription deactivated successfully');
+    } catch (error) {
+      toast.error('Failed to deactivate subscription');
+    }
+    setIsDeactivateDialogOpen(false);
+  };
+
+  const handleActivateConfirm = async () => {
+    if (!subscriptionDuration) {
+      toast.error('Please enter subscription duration');
+      return;
+    }
+
+    try {
+      await updateSubscriber(subscriberId, {
+        active: true,
+        subscriptionDuration,
+      });
+      setSubscriber({ ...subscriber, active: true });
+      toast.success('Subscription activated successfully');
+    } catch (error) {
+      toast.error('Failed to activate subscription');
+    }
+    setIsActivateDialogOpen(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subscriber) return;
@@ -128,6 +189,17 @@ export default function EditSubscriberPage({
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex items-center justify-between mb-6">
+              <label className="text-sm font-medium">Subscription Status</label>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={subscriber.active}
+                  className="bg-white"
+                  onCheckedChange={handleActiveToggle}
+                />
+                <span>{subscriber.active ? 'Active' : 'Inactive'}</span>
+              </div>
+            </div>
             <div className="grid gap-2">
               <label htmlFor="starlinkId">Starlink ID</label>
               <Input
@@ -266,6 +338,65 @@ export default function EditSubscriberPage({
           </form>
         </CardContent>
       </Card>
+      {/* Deactivate Confirmation Dialog */}
+      <AlertDialog
+        open={isDeactivateDialogOpen}
+        onOpenChange={setIsDeactivateDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Deactivation</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to deactivate this subscription? This will
+              remove the subscription end date.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeactivateConfirm}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Activate Subscription Dialog */}
+      <AlertDialog
+        open={isActivateDialogOpen}
+        onOpenChange={setIsActivateDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Activate Subscription</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please enter the subscription duration to activate this
+              subscription.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <label htmlFor="activationDuration">
+                Subscription Duration (months)
+              </label>
+              <Input
+                id="activationDuration"
+                type="number"
+                min="1"
+                value={subscriptionDuration}
+                onChange={(e) =>
+                  setSubscriptionDuration(parseInt(e.target.value))
+                }
+              />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleActivateConfirm}>
+              Activate
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
