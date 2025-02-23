@@ -168,10 +168,15 @@ const Map = () => {
         <MapContainer
           center={defaultCenter}
           zoom={2}
-          style={{ height: '70vh', width: '100%', zIndex: 1 }}
+          style={{
+            height: '70vh',
+            width: '100%',
+            zIndex: 1,
+            overflow: 'auto',
+          }}
           scrollWheelZoom={false}
           doubleClickZoom={false}
-          dragging={false}
+          dragging={true}
           touchZoom={false}
           boxZoom={false}
           keyboard={false}
